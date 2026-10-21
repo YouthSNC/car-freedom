@@ -1,0 +1,15 @@
+# Build output
+bin/
+obj/
+
+# Publishing staging (contains the packaged dll and mod.json)
+dist/
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# Local debugging
+_dump*/
+_archive/
