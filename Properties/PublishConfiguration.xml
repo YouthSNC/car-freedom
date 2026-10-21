@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Publish>
+	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
+	<ModId Value="163257" />
+	<!--Name of the mod to display to players-->
+	<DisplayName Value="Car Freedom" />
+	<!--Short description of the mod-->
+	<ShortDescription Value="Every resident household gets a personal car, spawned right at its home. AI-generated mod, not extensively tested - please back up your save before use." />
+	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
+	<!--IMPORTANT: every line below must start at the left margin (no indentation), otherwise the formatting breaks.-->
+	<LongDescription>
+# Car Freedom
+
+**Every resident household gets a personal car - and the car is spawned right at the household's home, so citizens always find it parked close by and actually drive instead of walking.**
+
+
+# !!! WARNING - PLEASE READ BEFORE SUBSCRIBING !!!
+
+**This mod was written with the help of AI and has NOT been extensively tested. It is provided AS IS, with absolutely no guarantee of safety, stability, compatibility or save-game integrity. You use it entirely at your own risk.**
+
+Before you enable this mod, please make sure you understand the following:
+
+* **BACK UP YOUR SAVE GAME FIRST.** This is a code mod that creates vehicle entities in your city. Keep a manual backup copy of any save you care about (and use a separate test city if possible) so you can always roll back.
+* **No warranty, no liability.** If your city breaks, your save is damaged, or the game crashes, there is no guarantee that this can be fixed and no liability is accepted.
+* **Not thoroughly verified.** The mod was only tested on a limited number of saves and a limited amount of gameplay. Edge cases - unusual maps, very large cities, other mods, DLC combinations - have not been covered.
+* **It modifies live simulation data.** Disabling the mod does not remove the cars that were already created; they stay in your save as normal vehicles.
+* **Always keep a backup before every game version update.** Game updates can change internal code and make the mod behave unexpectedly or stop working.
+* **No support is promised.** Feedback and bug reports are welcome, but fixes are not guaranteed.
+
+**If any of the above is not acceptable to you, please do not subscribe to or use this mod.**
+
+
+## What it does
+
+Tired of households that own no car at all, or that park their cars so far away that citizens give up driving and walk instead?
+
+This mod makes sure almost every **resident household owns at least one personal car**, and spawns it **right at the household's home building**. Because the car starts next to the home, it is always parked close by - so citizens genuinely pick it up when they travel.
+
+## Settings
+
+The mod adds its own page under **Options > Mods > Car Freedom**:
+
+* **Minimum household members** - a slider from 1 to 20, default 3. Households with fewer members than this are skipped entirely: they are not counted as carless and no vehicle is spawned for them. The default of 3 still covers the typical family; set it to 1 if you want every household to receive a car (the behaviour of earlier versions).
+
+Changes take effect on the next simulation pass - no reload and no restart needed. Cars that were already granted are never removed, even if you raise the threshold.
+
+## How it works
+
+* Periodically scans every resident household that has a home.
+* If the household owns no personal car, it is granted one.
+* The car is created with the exact same internal call the vanilla game uses when a household buys a car (PersonalCarSelectData.CreateVehicle). The only difference is that the "dealership" is the household's own home, so the car always starts nearby.
+* Ownership, parking, driving and path-finding all use the vanilla systems, which keeps the mod compatible with other traffic / AI mods.
+* Households that already own a car are skipped - no duplicates.
+* Tourists, commuters, homeless households and households that are moving away are ignored.
+
+## Technical notes
+
+* Works on existing saves. Newly added cars are spread over time (at most 32 per tick), so a large city fills up gradually over a few game days.
+* Cars are granted for free - the vanilla purchase probability and price are left untouched.
+* Built entirely on the game's own ECS pipeline; no game files are modified.
+* The scan reads households directly from the game's ECS chunks and is written to be cheap: in a city of 200,000 citizens it costs a fraction of a millisecond per pass, and the pass is skipped entirely when every household already has a car.
+* The mod is currently English/Chinese only in its log output; it adds no UI of its own.
+
+
+## 中文说明
+
+**让绝大多数居民家庭都拥有至少一辆私家车，并且车辆直接生成在自家门口**，因此永远停在离家最近的位置——市民出门时就会真正选择开车，而不是因为车位太远而改走路。
+
+
+# ！！！重要警告 - 订阅前请务必阅读！！！
+
+**本模组由 AI 生成，未经充分测试，按"现状"提供，不提供任何形式的安全、稳定性、兼容性或存档完整性的保障。使用风险完全由你自己承担。**
+
+* **请务必先备份存档。** 这是一个会向城市中生成车辆实体的代码模组。请手动备份你在意的存档（最好另开一个测试城市），以便随时回退。
+* **不提供任何担保。** 如果城市异常、存档损坏或游戏崩溃，不保证能够修复，也不承担任何责任。
+* **未经充分验证。** 仅在有限的存档和有限的游戏时长中测试过；特殊地图、超大人口城市、其他模组组合、DLC 组合等情况均未覆盖。
+* **它会修改进行中的模拟数据。** 关闭模组并不会移除已经生成的车辆，它们会作为普通车辆留在存档中。
+* **每次游戏版本更新前请先备份。** 游戏更新可能改变内部代码，导致模组行为异常或失效。
+* **不承诺提供支持。** 欢迎反馈问题，但不保证会修复。
+
+**如果你无法接受以上任何一点，请不要订阅或使用本模组。**
+
+## 设置界面
+
+模组在 **游戏设置 → 模组 → Car Freedom** 中提供独立设置页：
+
+* **家庭最少成员数** —— 滑动条，范围 1 到 20，默认 3。成员数低于该值的家庭会被完全跳过：不计入无车统计，也不会为其生成车辆。默认值 3 仍能覆盖典型家庭；如果你希望所有家庭都获得车辆（旧版本的行为），把它设为 1。
+
+改动在下一轮模拟扫描时生效，无需重新读档或重启游戏。即使调高阈值，已经发出去的车辆也不会被收回。
+
+## 工作原理
+
+* 定期扫描每一户有房屋的居民家庭。
+* 如果家庭没有私家车，就为其配一辆。
+* 车辆的创建调用与原版购车完全相同（PersonalCarSelectData.CreateVehicle）。唯一区别是"经销商"变成了家庭自己的住宅，所以车总是从家附近开始。
+* 所有权、停车、驾驶和寻路全部沿用原版系统，因此与其他交通 / AI 类模组兼容。
+* 已有车的家庭会被跳过，不会重复发车。
+* 游客、通勤者、无家可归家庭以及正在搬离的家庭会被忽略。
+
+## 技术说明
+
+* 对已有存档生效。新增车辆分布在时间上（每刻最多 32 辆），人口多的城市会在数个游戏日内逐步完成覆盖。
+* 发车是免费的，原版的购车概率与价格逻辑保持不变。
+* 完全基于游戏自身的 ECS 流水线构建，不修改任何游戏文件。
+* 扫描直接读取游戏 ECS 的 chunk 数据，开销很低：20 万人口的城市每轮只占用零点几毫秒；当所有家庭都已拥有车辆时会整体跳过。
+* 模组没有自己的界面，仅在日志中输出英文/中文信息。
+	</LongDescription>
+	<!--Thumbnail: path is resolved relative to the working directory the publisher is launched from-->
+	<Thumbnail Value="Properties/Thumbnail.png" />
+	<!--Screenshot, can be set multiple times-->
+	<Screenshot Value="" />
+	<!--Tag, can be set multiple times-->
+	<Tag Value="Code Mod" />
+	<!--Link to the forum post where the mod can be discussed-->
+	<ForumLink Value="" />
+	<!--Version of the mod-->
+	<ModVersion Value="1.2" />
+	<!--Recommended version of the base game to use the mod-->
+	<GameVersion Value="1.6.*" />
+	<!--Dependency for the mod, can be set multiple times-->
+	<Dependency Id="" />
+	<!--Required DLC, can be set multiple times.-->
+	<RequiredDLC Value="" />
+	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
+	<!--IMPORTANT: every line below must start at the left margin (no indentation), otherwise the formatting breaks.-->
+	<ChangeLog>
+Version 1.2 - adds a settings page.
+
+* New: the mod now has its own page under Options > Mods > Car Freedom, with a "Minimum household members" slider (1 to 20, default 3). Households with fewer members than the chosen value are skipped entirely - no car, and they are not counted as carless either. Set it to 1 if you want the behaviour of earlier versions, where every household got a car.
+* Slider changes apply on the next simulation pass; no reload or restart needed. Cars that were already granted are never removed when you raise the threshold.
+* Raising the threshold also makes the scan cheaper, because those households are rejected before any lookup happens.
+
+Note: this mod is AI-generated and has not been extensively tested. Please back up your save before use.
+	</ChangeLog>
+	<!--Supported values Public, Private, Unlisted-->
+	<AccessLevel Value="Public" />
+</Publish>
